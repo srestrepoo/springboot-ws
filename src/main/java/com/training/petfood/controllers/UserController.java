@@ -1,5 +1,7 @@
-package com.training.petfood.test;
+package com.training.petfood.controllers;
 
+import com.training.petfood.models.User;
+import com.training.petfood.repositories.UserRepository;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -26,55 +28,55 @@ public class UserController {
     private UserRepository userRepository;
 
     @GetMapping()
-    public ResponseEntity<List<UserDto>> getAll() {
-        List<UserDto> userList = userRepository.findAll();
+    public ResponseEntity<List<User>> getAll() {
+        List<User> userList = userRepository.findAll();
         return new ResponseEntity<>(userList, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<UserDto>> getById(@PathVariable String id) {
+    public ResponseEntity<Optional<User>> getById(@PathVariable String id) {
         int userId = Integer.parseInt(id);
-        Optional<UserDto> foundUsers = userRepository.findById(userId);
+        Optional<User> foundUsers = userRepository.findById(userId);
         return new ResponseEntity<>(foundUsers, HttpStatus.OK);
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<UserDto>> getByName(@RequestParam(name = "name") String name) {
-        List<UserDto> foundUsers = userRepository.findByName(name);
+    public ResponseEntity<List<User>> getByName(@RequestParam(name = "name") String name) {
+        List<User> foundUsers = userRepository.findByName(name);
         return new ResponseEntity<>(foundUsers, HttpStatus.OK);
     }
 
     @PostMapping()
-    public ResponseEntity<UserDto> create(@RequestBody Map<String, String> body) {
+    public ResponseEntity<User> create(@RequestBody Map<String, String> body) {
         String name = body.get("name");
         Integer salary = Integer.parseInt(body.get("salary"));
-        UserDto createdUser = userRepository.save(new UserDto(name, salary));
+        User createdUser = userRepository.save(new User(name, salary));
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}/delete")
     public ResponseEntity delete(@PathVariable String id) {
         int userId = Integer.parseInt(id);
-        UserDto userToDelete = userRepository.findById(userId).orElse(null);
+        User userToDelete = userRepository.findById(userId).orElse(null);
         userRepository.delete(userToDelete);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserDto> update(@PathVariable String id, @RequestBody Map<String, String> body) {
+    public ResponseEntity<User> update(@PathVariable String id, @RequestBody Map<String, String> body) {
         int userId = Integer.parseInt(id);
         try {
-            UserDto userToUpdate = userRepository.findById(userId).orElse(null);
+            User userToUpdate = userRepository.findById(userId).orElse(null);
             try {
                 userToUpdate.setName(body.get("name"));
                 userToUpdate.setSalary(Integer.parseInt(body.get("salary")));
-                UserDto updatedUser = userRepository.save(userToUpdate);
+                User updatedUser = userRepository.save(userToUpdate);
                 return new ResponseEntity<>(updatedUser, HttpStatus.OK);
             } catch (Error error) {
-                return new ResponseEntity<UserDto>(HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity<User>(HttpStatus.INTERNAL_SERVER_ERROR);
             }
         } catch (Error error) {
-            return new ResponseEntity<UserDto>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -89,7 +91,7 @@ public class UserController {
             if (row.getCell(0).getCellTypeEnum().compareTo(CellType.STRING) == 0 &&
                     row.getCell(1).getCellTypeEnum().compareTo(CellType.NUMERIC) == 0) {
                 userRepository.save(
-                        new UserDto(
+                        new User(
                                 row.getCell(0).getStringCellValue(),
                                 (int) row.getCell(1).getNumericCellValue()
                         )
