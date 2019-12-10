@@ -56,6 +56,7 @@ public class LotServiceImp implements ILotService {
 
     @Override
     public List<Lot> getAllLots() {
-        return lotRepository.findAll();
+        List<Lot> lotList = lotRepository.findAll();
+        return lotList;
     }
 }
