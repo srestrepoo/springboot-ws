@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface ILotService {
 
-    public List<Lot> createLotsFromFile(MultipartFile xlsxStream) throws IOException, InvalidFormatException;
+    List<Lot> createLotsFromFile(MultipartFile xlsxStream) throws IOException, InvalidFormatException;
 
-    public List<Lot> getAllLots();
+    List<Lot> getAllLots();
 }

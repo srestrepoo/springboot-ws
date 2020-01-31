@@ -7,6 +7,7 @@
         <module>petfood-services</module>
         <module>petfood-api</module>
         <module>petfood-persistance</module>
+        <module>petfood-integration</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
